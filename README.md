@@ -1,6 +1,6 @@
 # Llibres — Col·lecció Ortín-Escudé
 
-Our home library, published as a small static website: https://lan1984.github.io/books/
+Our home library, published as a small static website: https://lan1984.github.io/llibres/
 
 Sister site of [art](https://lan1984.github.io/art/), the painting collection. Both share the same design and link to each other from the header.
 
@@ -22,13 +22,13 @@ Sister site of [art](https://lan1984.github.io/art/), the painting collection. B
 
 ## Run locally
 
-Serve the parent folder so the links between `art` and `books` work:
+Serve the parent folder so the links between `art` and `llibres` work (the local folder must be named `llibres`, like the repo):
 
 ```bash
 python3 -m http.server 8765 --directory ~/Documents/GitHub
 ```
 
-Then open http://localhost:8765/books/
+Then open http://localhost:8765/llibres/
 
 ## Adding a book
 

@@ -86,10 +86,10 @@ The kickoff idea of putting the API first was reversed so that a manual Portada 
 ### 7. Branding & cross-links
 
 - One brand, two sections: same OE logo + "Col·lecció Ortín-Escudé" in both headers.
-- Shared nav: `Obres` → `../art/`, `Llibres` → `../books/`; current section active.
-- `art`'s disabled "Llibres" becomes a real link to `../books/` now.
-- Separate repo `Lan1984/books` → `lan1984.github.io/books/` (art: `lan1984.github.io/art/`).
-- Local testing: serve the parent `GitHub/` folder so `/art/` and `/books/` link like on Pages: `python3 -m http.server 8765 --directory ~/Documents/GitHub` → http://localhost:8765/books/
+- Shared nav: `Obres` → `../art/`, `Llibres` → `../llibres/`; current section active.
+- `art`'s disabled "Llibres" becomes a real link to `../llibres/` now.
+- Separate repo **`Lan1984/llibres`** → https://lan1984.github.io/llibres/ (art: https://lan1984.github.io/art/). Local folder should be named `llibres` too, so relative links work locally.
+- Local testing: serve the parent `GitHub/` folder so `/art/` and `/llibres/` link like on Pages: `python3 -m http.server 8765 --directory ~/Documents/GitHub` → http://localhost:8765/llibres/
 
 ### 8. Ownership (Ortín / Escudé)
 

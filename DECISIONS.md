@@ -17,7 +17,9 @@ Status: live against the real sheet (`1fit_6o9YVrx1t2iHjHtjE3bpswkViEQlDCq2oA6Qg
 
 ### 1. Sheet columns
 
-Catalan headers (same as `art`; the code also accepts unaccented variants).
+Catalan headers (same as `art`). Headers are matched ignoring case and accents (`Data Lectura` = `Data lectura`); column order doesn't matter.
+
+Sheet quirk: with a Catalan/Spanish locale, typing `4.5` in Valoració makes Sheets store the *date* 4 May. The CSV export returns the displayed text (`4.5`), so it still works, but formatting the column as *Plain text* (or typing `4,5`) is cleaner.
 
 | Column | Type | Shown | Use |
 |---|---|---|---|
@@ -34,6 +36,7 @@ Catalan headers (same as `art`; the code also accepts unaccented variants).
 | Gènere | text | yes | Future filter |
 | Ressenya | text | yes (detail) | Public opinion on the book |
 | Nota | text | **never** | Private note |
+| Data lectura | date (2026-03-14 / 14/03/2026) or just a year (2026) | yes (detail) | Stats: read per year |
 
 Rejected: prices, "Prestat a" (personal data about third parties in a public sheet).
 
@@ -59,7 +62,7 @@ The kickoff idea of putting the API first was reversed so that a manual Portada 
 ### 4. Grid, cards, order
 
 - Grid: 5 cols desktop, 4 ≤1080px, 3 tablet, 2 mobile. Covers fixed **2:3**, `object-fit: cover`, thin shadow.
-- Card: cover → title (serif, max 2 lines) → authors (italic) → Estat badge + stars (stars only when Llegit and Valoració set).
+- Card: cover → title (serif, max 2 lines) → authors (italic) → Gènere pill + Estat badge → stars on their own line below the badges (only when Llegit and Valoració set), so ratings sit in the same place on every card.
 - Badges: *Llegit* ink outline · *Llegint* filled terracotta · *Pendent* muted grey. Small caps, like `art` meta labels.
 - Placeholder: coloured "book" tile with title + author in serif, small "Portada no disponible" at the bottom.
 - Default order: **Llegint first**, then the rest by Any compra, newest first (missing year last, then sheet order).
@@ -98,7 +101,7 @@ The kickoff idea of putting the API first was reversed so that a manual Portada 
 - **Tabs are fetched by gid, not by name**: gviz silently returns the *first* tab when `&sheet=<name>` doesn't match, which would duplicate books under the wrong owner after a rename. Config: `TABS = [{ owner: 'Ortín', gid: '1772033601' }, { owner: 'Escudé', gid: '2113165591' }]`. A new owner tab → add its gid (visible in the URL as `#gid=…` when the tab is open).
 - The sheet also has a `_exemple` tab (gid `1728662667`), which is not read by the site.
 - Purpose: a future owner filter.
-- Tab names: **`Ortín`** and **`Escudé`**. Kept as a constant `TABS` in code (gviz can't list tabs; a new owner = one-line change). See gid note above.
+- Tab names: **`Ortín`** and **`Escudé`**. Kept as a constant `TABS` in code (the export can't list tabs; a new owner = one-line change). See gid note above.
 - Display: detail page only, fact-table row "Propietat: Ortín". Not on cards (yet).
 - Same book in both tabs → **two separate entries**. Id = `<owner-slug>-<ISBN>` (e.g. `#/llibre/escude-9788433920423`); no-ISBN fallback `<owner-slug>-<title-slug>`. This replaces the plain-ISBN id from §5.
 
@@ -106,7 +109,7 @@ The kickoff idea of putting the API first was reversed so that a manual Portada 
 
 - `sheet-template.csv`: the 13 headers in order + example rows. Import into a new Google Sheet as tab `Ortín`, duplicate as `Escudé`, set ISBN column to *Plain text*, share "anyone with the link can view".
 - While `SHEET_ID` (top of `index.html`) is empty, the site reads `sample-data.js` (~25 real books across both tabs, fake Estat/Valoració). Paste the sheet ID to switch to live data.
-- gviz is called with `&headers=1&gid=<gid>` so the first row is always taken as headers.
+- Data is read from the **CSV export** (`/export?format=csv&gid=<gid>`), not the gviz JSON API. gviz guesses one type per column and blanks out cells that don't fit (e.g. a rating `4` in a column it decided is dates), which hid ratings for some books. The CSV export returns every cell as displayed and allows cross-origin requests. First row = headers.
 
 ### Defaults (not debated, same as `art`)
 
@@ -114,6 +117,21 @@ The kickoff idea of putting the API first was reversed so that a manual Portada 
 - Footer: "© Col·lecció Ortín-Escudé" only.
 - Fonts from Google Fonts; light paper/ink palette.
 - Single `index.html`, no build step; `.gitignore` with `.DS_Store`.
+
+### 10. Genre pill
+
+- Gènere shown as a pill: ink (black) background, coloured text. On cards (meta row, before the Estat badge), on the detail page (in place of the eyebrow) and on the stats page.
+- Colours come from a 12-hue wheel. Each genre starts at the hue picked by hashing its name; if it's taken, it moves to the next free one. Genres are processed in alphabetical order, so colours are distinct for up to 12 genres and stable unless new genres are added.
+
+### 11. Statistics page
+
+- Entry point: small bar-chart icon next to the book count on the list → `#/estadistiques`. Back link returns to the list with search and scroll restored.
+- Summary: total, Llegits, Llegint, Pendents.
+- **Millor valorats**: top 10 Llegit books by Valoració (tie → most recently read, then title).
+- **Per gènere**: count of all books per genre, bar chart in the genre colour, "Sense gènere" for blanks.
+- **Llegits per any**: grouped by the year of **Data lectura** (new column), newest year first; within a year the 10 most recent (full dates sort before year-only entries). Books without Data lectura are left out.
+- Combined across both owners.
+- `?sample` in the URL forces `sample-data.js`, for testing without touching the sheet.
 
 ## Open questions
 

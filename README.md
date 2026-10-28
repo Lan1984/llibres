@@ -9,6 +9,7 @@ Sister site of [art](https://lan1984.github.io/art/), the painting collection. B
 - The books live in a public **Google Sheet**, with one tab per owner (`Ortín`, `Escudé`). The page reads it live on every visit, so editing the sheet updates the site; there is no build or deploy step for content changes.
 - **Covers**: the sheet's `Portada` URL if set, otherwise [Open Library](https://openlibrary.org) by ISBN, otherwise a "Portada no disponible" placeholder.
 - Search by title, author, ISBN, publisher or genre; 10 books load at a time as you scroll; each book has its own detail page.
+- Genre shown as a coloured pill; a stats page (icon next to the book count) shows top-rated books, books per genre and books read per year (from the `Data lectura` column).
 - The `Nota` column is private and never shown on the site (but the sheet itself is public).
 
 ## Files
@@ -18,7 +19,7 @@ Sister site of [art](https://lan1984.github.io/art/), the painting collection. B
 | `index.html` | The whole site: plain HTML, CSS and JS, no dependencies |
 | `DECISIONS.md` | Every design decision and why |
 | `sheet-template.csv` | Column headers and example rows for the Google Sheet |
-| `sample-data.js` | Fake data, used only if `SHEET_ID` in `index.html` is empty |
+| `sample-data.js` | Fake data, used if `SHEET_ID` in `index.html` is empty or the URL has `?sample` |
 
 ## Run locally
 
